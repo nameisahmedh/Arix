@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+
+*{
+    font-family: "Outfit", sans-serif;
+}
+
+@theme{
+    --color-primary : #FB6D3A
+}
+
+.reset-tw, .reset-tw *{
+    all: revert !important;
+}
+
+.cl-drawerRoot {
+  z-index: 60 !important;
+}
+
+.selection-area {
+    position: absolute;
+    border: 2px dashed #FB6D3A;
+    background-color: rgba(251, 109, 58, 0.2);
+    cursor: crosshair;
+    pointer-events: none;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    cursor: crosshair;
+}
+
