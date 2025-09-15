@@ -20,8 +20,6 @@ export const auth = async (req,res,next)=>{
             req.free_usage = 0;
         }
 
-        
-
         req.plan = hasPremiumPlan ? 'Premium' : 'Free';
         next()
 

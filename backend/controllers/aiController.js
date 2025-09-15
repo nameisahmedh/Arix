@@ -115,13 +115,6 @@ export const generateImage = async (req, res) => {
     const { prompt, publish } = req.body;
     const plan = req.plan;
 
-    if (plan !== "Premium") {
-      return res.json({
-        success: false,
-        message: "This feature is only available for Premium users. Please upgrade your plan.",
-      });
-    }
-
     const formData = new FormData();
     formData.append("prompt", prompt);
     const { data } = await axios.post(
@@ -188,7 +181,7 @@ export const removeImageBackground = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            imageUrl: processedImageUrl,
+            secure_url: processedImageUrl,
             message: 'Background removed successfully'
         });
 
