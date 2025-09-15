@@ -1,0 +1,23 @@
+{
+  "build": {
+    "env": {
+      "VITE_PUBLIC_CLERK_PUBLISHABLE_KEY": "@vite-public-clerk-publishable-key"
+    }
+  },
+  "functions": {
+    "api/**/*.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/backend/server.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/frontend/index.html"
+    }
+  ]
+}

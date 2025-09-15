@@ -25,8 +25,18 @@ const app = express();
 await connectCloudinary();
 
 // ✅ THIS IS THE CORRECTED CORS CONFIGURATION
+const allowedOrigins = ['http://localhost:5173', process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL]; // Allow local and Vercel URLs
+
 app.use(cors({
-  origin: 'http://localhost:5173', // The address of your frontend application
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true,
 }));
 
