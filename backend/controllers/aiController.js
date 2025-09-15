@@ -114,12 +114,14 @@ export const generateImage = async (req, res) => {
     const { userId } = req.auth();
     const { prompt, publish } = req.body;
     const plan = req.plan;
-    const free_usage = req.free_usage;
+    
+    const user = await clerkClient.users.getUser(userId);
+    const imageUsage = user.privateMetadata?.image_usage || 0;
 
-    if (plan !== "Premium" && free_usage >= 3) {
+    if (plan !== "Premium" && imageUsage >= 3) {
       return res.json({
         success: false,
-        message: "You've reached your free limit of 3 images. Upgrade to Premium for unlimited image generation and access to all features!",
+        message: "You've used all 3 free image generations. Upgrade to Premium for unlimited image creation!",
         upgrade: true
       });
     }
@@ -156,7 +158,8 @@ export const generateImage = async (req, res) => {
     if (plan !== "Premium") {
       await clerkClient.users.updateUserMetadata(userId, {
         privateMetadata: {
-          free_usage: free_usage + 1,
+          ...user.privateMetadata,
+          image_usage: imageUsage + 1,
         },
       });
     }
@@ -174,12 +177,14 @@ export const removeImageBackground = async (req, res) => {
     try {
         const { userId } = req.auth();
         const plan = req.plan;
-        const free_usage = req.free_usage;
+        
+        const user = await clerkClient.users.getUser(userId);
+        const bgRemovalUsage = user.privateMetadata?.bg_removal_usage || 0;
 
-        if (plan !== "Premium" && free_usage >= 3) {
+        if (plan !== "Premium" && bgRemovalUsage >= 3) {
             return res.json({
                 success: false,
-                message: "You've reached your free limit of 3 images. Upgrade to Premium for unlimited background removal and access to all features!",
+                message: "You've used all 3 free background removals. Upgrade to Premium for unlimited background removal!",
                 upgrade: true
             });
         }
@@ -211,7 +216,8 @@ export const removeImageBackground = async (req, res) => {
         if (plan !== "Premium") {
             await clerkClient.users.updateUserMetadata(userId, {
                 privateMetadata: {
-                    free_usage: free_usage + 1,
+                    ...user.privateMetadata,
+                    bg_removal_usage: bgRemovalUsage + 1,
                 },
             });
         }
