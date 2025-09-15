@@ -113,7 +113,7 @@ export const generateImage = async (req, res) => {
   try {
     const { userId } = req.auth();
     const { prompt, publish } = req.body;
-    const plan = req.pla;
+    const plan = req.plan;
 
     if (!plan || !plan.toLowerCase().includes("premium")) {
       return res.json({

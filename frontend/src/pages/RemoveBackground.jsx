@@ -81,13 +81,21 @@ const RemoveBackground = () => {
     setIsProcessing(true);
     try {
         const token = await getToken();
-        const result = await processImage(
-            selectedFile, 
-            API_CONFIG.endpoints.removeBackground,
-            token
+        const formData = new FormData();
+        formData.append('image', selectedFile);
+
+        const { data } = await axios.post(
+            '/api/ai/remove-image-background',
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
         );
-        
-        setProcessedImage(result.imageUrl);
+
+        setProcessedImage(data.secure_url);
         toast.success("Background removed successfully!");
     } catch (error) {
         toast.error(error.response?.data?.message || "Failed to process image");
