@@ -80,13 +80,6 @@ const GenerateImages = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // --- FIX: Added Premium User Check ---
-    // This checks the 'pla' claim from the user's token on the frontend.
-    if (!sessionClaims?.pla?.toLowerCase().includes('premium')) {
-      toast.error("This feature is only available for premium subscriptions.");
-      return;
-    }
-
     if (!description.trim()) {
         toast.error("Please enter a description for the image.");
         return;

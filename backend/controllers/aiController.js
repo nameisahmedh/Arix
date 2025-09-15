@@ -115,10 +115,10 @@ export const generateImage = async (req, res) => {
     const { prompt, publish } = req.body;
     const plan = req.plan;
 
-    if (!plan || !plan.toLowerCase().includes("premium")) {
+    if (plan !== "Premium") {
       return res.json({
         success: false,
-        message: "This feature is only available for premium subscriptions",
+        message: "This feature is only available for Premium users. Please upgrade your plan.",
       });
     }
 

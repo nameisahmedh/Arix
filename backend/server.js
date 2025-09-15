@@ -16,8 +16,26 @@ import { clerkMiddleware } from '@clerk/express'; // Removed requireAuth as it's
 import aiRouter from "./routes/aiRoutes.js";
 import connectCloudinary from "./configs/cloudinary.js";
 import userRouter from "./routes/userRoutes.js";
+import { errorHandler } from "./middleware/auth.js";
 
 dotenv.config();
+
+// Check for required environment variables
+const requiredEnvVars = [
+  'MONGO_URI',
+  'CLERK_SECRET_KEY',
+  'GEMINI_API_KEY',
+  'CLOUDINARY_CLOUD_NAME',
+  'CLOUDINARY_API_KEY',
+  'CLOUDINARY_API_SECRET'
+];
+
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+if (missingEnvVars.length > 0) {
+  console.error('❌ Missing required environment variables:', missingEnvVars.join(', '));
+  console.error('Please check your .env file and ensure all required variables are set.');
+  process.exit(1);
+}
 
 connectDB();
 const app = express();
@@ -50,8 +68,12 @@ app.get('/', (req, res) => res.send('Server is Live'));
 app.use('/api/ai', aiRouter);
 app.use('/api/user', userRouter);
 
+// Error handling middleware
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log('Server is running on port', PORT);
+    console.log('✅ All environment variables are configured');
 });

@@ -1,23 +1,5 @@
 import { clerkClient } from "@clerk/express";
-// Middleware to check userid and hasPremiumPlan
 
-// In middleware/auth.js
-
-export const checkPlan = async (req, res, next) => {
-  console.log("--- RUNNING DEBUG MIDDLEWARE ---");
-
-  // Create a fake req.auth function that returns a test user ID
-  req.auth = () => ({
-    userId: "user_debug_test_12345"
-  });
-
-  // Force the plan to be Premium
-  req.pla = "u:premium";
-
-  console.log("✅ Forced user to be Premium. Calling controller...");
-  
-  next(); // Go to the generateImage controller
-};
 export const auth = async (req,res,next)=>{
     try {
 
