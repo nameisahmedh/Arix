@@ -114,6 +114,15 @@ export const generateImage = async (req, res) => {
     const { userId } = req.auth();
     const { prompt, publish } = req.body;
     const plan = req.plan;
+    const free_usage = req.free_usage;
+
+    if (plan !== "Premium" && free_usage >= 3) {
+      return res.json({
+        success: false,
+        message: "You've reached your free limit of 3 images. Upgrade to Premium for unlimited image generation and access to all features!",
+        upgrade: true
+      });
+    }
 
     const formData = new FormData();
     formData.append("prompt", prompt);
@@ -144,6 +153,14 @@ export const generateImage = async (req, res) => {
       publish: publish ?? false,
     });
 
+    if (plan !== "Premium") {
+      await clerkClient.users.updateUserMetadata(userId, {
+        privateMetadata: {
+          free_usage: free_usage + 1,
+        },
+      });
+    }
+
     res.json({ success: true, secure_url });
   } catch (error) {
     console.log(error.message);
@@ -155,6 +172,18 @@ export const generateImage = async (req, res) => {
 
 export const removeImageBackground = async (req, res) => {
     try {
+        const { userId } = req.auth();
+        const plan = req.plan;
+        const free_usage = req.free_usage;
+
+        if (plan !== "Premium" && free_usage >= 3) {
+            return res.json({
+                success: false,
+                message: "You've reached your free limit of 3 images. Upgrade to Premium for unlimited background removal and access to all features!",
+                upgrade: true
+            });
+        }
+
         if (!req.file) {
             return res.status(400).json({ success: false, message: 'No image file provided' });
         }
@@ -178,6 +207,14 @@ export const removeImageBackground = async (req, res) => {
         });
 
         await unlink(req.file.path);
+
+        if (plan !== "Premium") {
+            await clerkClient.users.updateUserMetadata(userId, {
+                privateMetadata: {
+                    free_usage: free_usage + 1,
+                },
+            });
+        }
 
         res.status(200).json({
             success: true,
